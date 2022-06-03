@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"etweb/utils"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -9,20 +13,53 @@ type User struct {
 	Nickname string `gorm:"type:varchar(500);not null" json:"nickname" validate:"required,min=4,max=64" label:"别名"`
 }
 
-func CheckUser(name string) (code int) {
-	var user User
-	db.Select("id").Where("username = ?", name).First(&user)
-	if user.ID > 0 {
-		return 1001 //1001
-	}
-	return 1002
-}
-
-func CreateUser(data *User) int {
-	//data.Password = ScryptPw(data.Password)
+// 新增用户
+func AddUser(data *User) int {
 	err := db.Create(&data).Error
 	if err != nil {
-		return 500 // 500
+		return utils.ERROR
+	} else {
+		return utils.SUCCSE
 	}
-	return 501
+}
+
+// 删除用户
+func DeleteUser(id int) int {
+	var user *User
+	var code int
+	user, code = FindUser(id)
+	if code == utils.ERROR {
+		return utils.ERROR
+	}
+	err := db.Delete(user)
+	if err != nil {
+		return utils.SUCCSE
+	} else {
+		return utils.ERROR
+	}
+}
+
+// 更新用户
+func UpdateUser(id int, data *User) int {
+	var user *User
+	user, _ = FindUser(id)
+	if data.Username != user.Username {
+		return utils.ERROR
+	}
+	err = db.Select("password", "nickname").Where("id = ?", id).Updates(&data).Error
+	if err != nil {
+		return utils.ERROR
+	}
+	return utils.SUCCSE
+}
+
+// 查询用户
+func FindUser(id int) (*User, int) {
+	var user User
+	err := db.Limit(1).Where("ID=?", id).Find(&user).Error
+	if err != nil {
+		return nil, utils.ERROR
+	} else {
+		return &user, utils.SUCCSE
+	}
 }
