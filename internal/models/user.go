@@ -24,10 +24,10 @@ func AddUser(data *User) int {
 }
 
 // 删除用户
-func DeleteUser(id int) int {
+func DeleteUser(username string) int {
 	var user *User
 	var code int
-	user, code = FindUser(id)
+	user, code = FindUser(username)
 	if code == utils.ERROR {
 		return utils.ERROR
 	}
@@ -40,13 +40,13 @@ func DeleteUser(id int) int {
 }
 
 // 更新用户
-func UpdateUser(id int, data *User) int {
+func UpdateUser(username string, data *User) int {
 	var user *User
-	user, _ = FindUser(id)
+	user, _ = FindUser(username)
 	if data.Username != user.Username {
 		return utils.ERROR
 	}
-	err = db.Select("password", "nickname").Where("id = ?", id).Updates(&data).Error
+	err = db.Select("password", "nickname").Where("username = ?", username).Updates(&data).Error
 	if err != nil {
 		return utils.ERROR
 	}
@@ -54,12 +54,13 @@ func UpdateUser(id int, data *User) int {
 }
 
 // 查询用户
-func FindUser(id int) (*User, int) {
+func FindUser(username string) (*User, int) {
 	var user User
-	err := db.Limit(1).Where("ID=?", id).Find(&user).Error
-	if err != nil {
-		return nil, utils.ERROR
-	} else {
+	db.Where("username = ?", username).First(&user)
+	// fmt.Println("查询到用户的id", user.ID)
+	if user.ID > 0 {
 		return &user, utils.SUCCSE
+	} else {
+		return nil, utils.ERROR
 	}
 }

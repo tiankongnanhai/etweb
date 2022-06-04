@@ -1,6 +1,7 @@
 package models
 
 import (
+	"etweb/utils"
 	"fmt"
 	"testing"
 )
@@ -19,8 +20,13 @@ func TestAddUser(t *testing.T) {
 
 func TestFindUser(t *testing.T) {
 	InitMysql()
-	user, _ := FindUser(1)
-	fmt.Println(user)
+	user, code := FindUser("pengxiangrong")
+	fmt.Println(code)
+	if code == utils.SUCCSE {
+		fmt.Println(user, user.Username, user.Password)
+	} else {
+		fmt.Println("not record")
+	}
 }
 
 func TestUpdateUser(t *testing.T) {
@@ -30,10 +36,10 @@ func TestUpdateUser(t *testing.T) {
 		Password: "0004456",
 		Nickname: "skss",
 	}
-	UpdateUser(1, user)
+	UpdateUser("sunsong", user)
 }
 
 func TestDeleteUser(t *testing.T) {
 	InitMysql()
-	DeleteUser(1)
+	DeleteUser("sunsong")
 }
