@@ -47,7 +47,7 @@ func UpdateUser(username string, data *User) int {
 	if data.Username != user.Username {
 		return utils.ERROR
 	}
-	err = db.Select("password", "nickname").Where("username = ?", username).Updates(&data).Error
+	err = db.Select("password", "nickname", "profile_pic").Where("username = ?", username).Updates(&data).Error
 	if err != nil {
 		return utils.ERROR
 	}
