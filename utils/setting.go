@@ -19,6 +19,8 @@ var (
 
 	RedisIp   string
 	RedisPort string
+
+	PicFileAddr string
 )
 
 func init() {
@@ -29,6 +31,7 @@ func init() {
 	LoadServer(cfg)
 	LoadMysql(cfg)
 	LoadRedis(cfg)
+	LoadFile(cfg)
 }
 
 func LoadServer(cfg *ini.File) {
@@ -50,4 +53,8 @@ func LoadRedis(cfg *ini.File) {
 	RedisIp = cfg.Section("").Key("RunMode").String()
 	RedisPort = cfg.Section("Server").Key("Ip").String()
 
+}
+
+func LoadFile(cfg *ini.File) {
+	PicFileAddr = cfg.Section("File").Key("Addr").String()
 }

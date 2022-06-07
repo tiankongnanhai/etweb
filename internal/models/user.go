@@ -8,9 +8,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"type:varchar(20);not null " json:"username" validate:"required,min=4,max=64" label:"用户名"`
-	Password string `gorm:"type:varchar(500);not null" json:"password" validate:"required,min=4,max=64" label:"密码"`
-	Nickname string `gorm:"type:varchar(500);not null" json:"nickname" validate:"required,min=4,max=64" label:"别名"`
+	Username   string `gorm:"type:varchar(20);not null " json:"username" validate:"required,min=4,max=64" label:"用户名"`
+	Password   string `gorm:"type:varchar(500);not null" json:"password" validate:"required,min=4,max=64" label:"密码"`
+	Nickname   string `gorm:"type:varchar(500)" json:"nickname" validate:"required,min=4,max=64" label:"别名"`
+	ProfilePic string `gorm:"type:varchar(1024)" json:"pofilepic" validate:"required,min=4,max=64" label:"用户图片"`
 }
 
 // 新增用户
