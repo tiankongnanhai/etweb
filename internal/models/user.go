@@ -8,10 +8,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Username   string `gorm:"type:varchar(20);not null " json:"username" validate:"required,min=4,max=64" label:"用户名"`
-	Password   string `gorm:"type:varchar(500);not null" json:"password" validate:"required,min=4,max=64" label:"密码"`
-	Nickname   string `gorm:"type:varchar(500)" json:"nickname" validate:"required,min=4,max=64" label:"别名"`
-	ProfilePic string `gorm:"type:varchar(1024)" json:"pofilepic" validate:"required,min=4,max=64" label:"用户图片"`
+	Username   string `gorm:"uniqueIndex,type:varchar(20);not null"`
+	Password   string `gorm:"type:varchar(500);not null" `
+	Nickname   string `gorm:"type:varchar(500)" `
+	Profilepic string `gorm:"type:varchar(1024)"`
 }
 
 // 新增用户
@@ -47,7 +47,7 @@ func UpdateUser(username string, data *User) int {
 	if data.Username != user.Username {
 		return utils.ERROR
 	}
-	err = db.Select("password", "nickname", "profile_pic").Where("username = ?", username).Updates(&data).Error
+	err = db.Select("password", "nickname", "profilepic").Where("username = ?", username).Updates(&data).Error
 	if err != nil {
 		return utils.ERROR
 	}

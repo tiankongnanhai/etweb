@@ -3,6 +3,7 @@ package service
 import (
 	"etweb/internal/models"
 	"etweb/utils"
+	"fmt"
 	"net/http"
 	"path"
 
@@ -52,16 +53,18 @@ func UploadFile(c *gin.Context) {
 		Username:   oldUser.Username,
 		Password:   oldUser.Password,
 		Nickname:   oldUser.Nickname,
-		ProfilePic: filePath,
+		Profilepic: filePath,
 	}
 	models.UpdateUser(oldUser.Username, &newUser)
 
 	// 返回数据
+	returndata := fmt.Sprintf("%+v", struct {
+		fileName string
+		fileUrl  string
+	}{fileName: file.Filename, fileUrl: filePath})
+
 	c.JSON(http.StatusOK, gin.H{
-		"data": struct {
-			fileName string
-			fileUrl  string
-		}{fileName: file.Filename, fileUrl: filePath},
+		"data":    returndata,
 		"msg":     utils.GetErrMsg(utils.SUCCSE),
 		"retcode": utils.SUCCSE,
 	})

@@ -29,7 +29,7 @@ func EditUser(c *gin.Context) {
 		Username:   oldUser.Username,
 		Password:   oldUser.Password,
 		Nickname:   nickName,
-		ProfilePic: picProfile,
+		Profilepic: picProfile,
 	}
 	models.UpdateUser(oldUser.Username, &newUser)
 	c.JSON(http.StatusOK, gin.H{

@@ -46,11 +46,10 @@ func Login(c *gin.Context) {
 
 	// session中储存当前用户
 	v := session.Get("currentUser")
-	fmt.Println(session.Get("currentUser"))
 	if v != user {
 		session.Set("currentUser", user)
 	}
-	fmt.Println(session.Get("currentUser"))
+
 	// 设置session的参数
 	options := sessions.Options{}
 	options.MaxAge = 100 // 有效期10秒
