@@ -8,10 +8,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Username   string `gorm:"uniqueIndex,type:varchar(20);not null"`
-	Password   string `gorm:"type:varchar(500);not null" `
-	Nickname   string `gorm:"type:varchar(500)" `
-	Profilepic string `gorm:"type:varchar(1024)"`
+	Username   string `gorm:"uniqueIndex,type:varchar(20);not null" json:"username"`
+	Password   string `gorm:"type:varchar(500);not null" json:"password"`
+	Nickname   string `gorm:"type:varchar(500)" json:"nickname"`
+	Profilepic string `gorm:"type:varchar(1024)" json:"profiepic"`
 }
 
 // 新增用户

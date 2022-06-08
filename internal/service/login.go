@@ -11,12 +11,16 @@ import (
 )
 
 func Login(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	var userJson models.User
+	if err := c.ShouldBindJSON(&userJson); err != nil {
+		// 返回错误信息
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	// 检查username是否已经注册
 	// 如果没注册，不允许登陆，返回
-	isRegister := CheakRegisterExit(username)
+	isRegister := CheakRegisterExit(userJson.Username)
 	if !isRegister {
 		c.JSON(
 			http.StatusBadRequest, gin.H{
@@ -30,8 +34,8 @@ func Login(c *gin.Context) {
 	// 检查密码是否正确
 	// 正确：登陆
 	// 错误：返回
-	user, _ := models.FindUser(username)
-	if password != user.Password {
+	user, _ := models.FindUser(userJson.Username)
+	if userJson.Username != user.Password {
 		c.JSON(
 			http.StatusBadRequest, gin.H{
 				"msg":     utils.GetErrMsg(utils.USER_LOGIN_FAILD),

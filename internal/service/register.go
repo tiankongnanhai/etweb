@@ -9,11 +9,15 @@ import (
 )
 
 func Register(c *gin.Context) {
-	// 从body中获取username和password
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	var userJson models.User
+	if err := c.ShouldBindJSON(&userJson); err != nil {
+		// 返回错误信息
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	// username为空，返回
-	if username == "" {
+	if userJson.Username == "" {
 		c.JSON(
 			http.StatusOK, gin.H{
 				"msg":     utils.GetErrMsg(utils.USERNAME_EMPTY),
@@ -23,7 +27,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	// password为空，返回
-	if password == "" {
+	if userJson.Password == "" {
 		c.JSON(
 			http.StatusOK, gin.H{
 				"msg":     utils.GetErrMsg(utils.PASSWORD_EMPTY),
@@ -33,7 +37,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	// 检查username是否已经注册
-	isRegister := CheakRegisterExit(username)
+	isRegister := CheakRegisterExit(userJson.Username)
 	if isRegister {
 		c.JSON(
 			http.StatusOK, gin.H{
@@ -43,10 +47,8 @@ func Register(c *gin.Context) {
 		)
 		return
 	}
-	// 获取nickname，可以为空
-	nickname := c.PostForm("nickname")
 	// 写入数据库
-	models.AddUser(&models.User{Username: username, Password: password, Nickname: nickname})
+	models.AddUser(&userJson)
 	c.JSON(http.StatusOK, gin.H{
 		"data":    struct{}{},
 		"msg":     utils.GetErrMsg(utils.SUCCSE),

@@ -22,14 +22,19 @@ func EditUser(c *gin.Context) {
 		return
 	}
 
-	nickName := c.PostForm("nickname")
-	picProfile := c.PostForm("picprofile")
+	var userJson models.User
+	if err := c.ShouldBindJSON(&userJson); err != nil {
+		// 返回错误信息
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	oldUser := session.Get("currentUser").(models.User)
 	newUser := models.User{
 		Username:   oldUser.Username,
 		Password:   oldUser.Password,
-		Nickname:   nickName,
-		Profilepic: picProfile,
+		Nickname:   userJson.Nickname,
+		Profilepic: userJson.Profilepic,
 	}
 	models.UpdateUser(oldUser.Username, &newUser)
 	c.JSON(http.StatusOK, gin.H{
